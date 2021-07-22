@@ -25,7 +25,20 @@ const findMessage = (myPass) => {
     });
 }
 
-document.querySelector("#viewMsg").addEventListener("click", () => {
-    const passcode = document.querySelector("#passcode").value;
+document.querySelector("#viewMsg").addEventListener("click", (e) => {
+    const userPasscodeGuess = document.querySelector("#passcode").value;
+
+    const messagesRef = firebase.database().ref();
+    messagesRef.on("value", (snapshot) => {
+        const data = snapshot.val();
+        for(let key in data){
+            if(data[key].passcode == userPasscodeGuess){
+                display(data[key]);
+            }
+        }
+    })
     findMessage(passcode);
 });
+function display(messageObject) {
+    document.querySelector("#message").innerHTML = messageObject.message;
+};
